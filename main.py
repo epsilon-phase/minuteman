@@ -16,7 +16,8 @@ context = 0
 maxlist = 3
 symbols = dict()
 labels = dict()
-
+settings=dict()
+settings['auto-para']=False
 
 def get_qualified_name(item):
     global symbols
@@ -43,7 +44,7 @@ def get_qualified_name(item):
 def printwithin(l, i, j):
     ll = len(l)
     print("Current element has {0} Elements\n".format(ll))
-    for z in range(i, j):
+    for z in range(i, i+j):
         if z < ll:
             print(str(z) + ":" + get_qualified_name(l[z]))
 
@@ -52,6 +53,9 @@ def append_to_thing(thing, item):
     if type(thing) == Enumerate:
         thing.add_item(item)
     else:
+        #Break the paragraph
+        if settings['auto-para']:
+            thing.append("")
         thing.append(item)
 
 
@@ -111,6 +115,8 @@ def main():
                 i = v
             if g[0]=='\\para':
                 append_to_thing(i,"")
+            if g[0]=='\\para-auto':
+                settings['auto-para']=settings['auto-para']
         else:
             if g[0] == "\\enter":
                 v = i[int(g[1])]
@@ -135,7 +141,7 @@ def main():
             if g[0] == '\\alias':
                 symbols[g[1]] = i[int(g[2])]
             if g[0] == '\\addrow':
-                # Append the arugments to the thing
+                # Append the arguments to the thing
                 i.add_row(g[1::])
             if g[0] == '\\label':
                 labels[i[int(g[1])]] = g[2]
